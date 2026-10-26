@@ -4098,6 +4098,20 @@ function Colophon() {
             <Github className="h-4 w-4" aria-hidden="true" /> GitHub
           </a>
         </div>
+        <div className="mt-10 border-t border-border pt-6">
+          <img
+            src={nvidiaInceptionBadge.url}
+            alt="NVIDIA Inception Program member badge"
+            width={120}
+            height={52}
+            loading="lazy"
+            className="h-[52px] w-auto"
+          />
+          <p className="mt-3 max-w-2xl text-[12px] leading-relaxed text-muted-foreground">
+            © 2025 NVIDIA, the NVIDIA logo, CUDA, RTX, and TensorRT are trademarks and/or
+            registered trademarks of NVIDIA Corporation in the U.S. and other countries.
+          </p>
+        </div>
       </Container>
     </footer>
   );
