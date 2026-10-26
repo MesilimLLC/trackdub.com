@@ -4099,14 +4099,22 @@ function Colophon() {
           </a>
         </div>
         <div className="mt-10 border-t border-border pt-6">
-          <img
-            src={nvidiaInceptionBadge.url}
-            alt="NVIDIA Inception Program member badge"
-            width={120}
-            height={52}
-            loading="lazy"
-            className="h-[52px] w-auto"
-          />
+          <a
+            href="https://www.nvidia.com/en-us/startups/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="NVIDIA Inception Program"
+            className="inline-flex w-fit"
+          >
+            <img
+              src={nvidiaInceptionBadge.url}
+              alt="NVIDIA Inception Program member badge"
+              width={120}
+              height={52}
+              loading="lazy"
+              className="h-[52px] w-auto"
+            />
+          </a>
           <p className="mt-3 max-w-2xl text-[12px] leading-relaxed text-muted-foreground">
             © 2025 NVIDIA, the NVIDIA logo, CUDA, RTX, and TensorRT are trademarks and/or
             registered trademarks of NVIDIA Corporation in the U.S. and other countries.
