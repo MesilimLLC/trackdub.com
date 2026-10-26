@@ -27,7 +27,7 @@ test("directory publishes a signed Ed25519 JWKS", async () => {
   const body = (await response.json()) as { keys: Array<{ kty?: string; crv?: string; x?: string; d?: string }> };
   assert.equal(body.keys.length, 1);
   assert.deepEqual(body.keys[0], publicJwkFromPrivate(privateJwk));
-  assert.equal(body.keys[0].d, undefined);
+  assert.equal((body.keys[0] as { d?: string }).d, undefined);
 });
 
 test("outbound bot requests include Signature-Agent and Signature-Input", async () => {
