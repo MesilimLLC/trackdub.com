@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { Github } from "lucide-react";
 import trackdubLogo from "@/assets/trackdub-logo.webp.asset.json";
 const trackdubIcon = trackdubLogo.url;
+import nvidiaInceptionBadge from "@/assets/nvidia-inception-program-badge.png.asset.json";
 import { CompanyAttribution, CompanyReturnBar } from "@/components/company-identity";
 
 const GITHUB_REPO = "https://github.com/mesalimllc/Trackdub";
