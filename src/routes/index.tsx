@@ -7,7 +7,7 @@ import { PRICING_PLANS } from "@/lib/pricing";
 import { PlanCard } from "@/components/plan-card";
 import { SectionHeading } from "@/components/section-heading";
 import { Github } from "lucide-react";
-import trackdubLogo from "@/assets/trackdub-logo.png.asset.json";
+import trackdubLogo from "@/assets/trackdub-logo.webp.asset.json";
 const trackdubIcon = trackdubLogo.url;
 import { CompanyAttribution, CompanyReturnBar } from "@/components/company-identity";
 
@@ -1005,7 +1005,12 @@ function Masthead() {
           className="flex shrink-0 items-center gap-3 font-serif text-2xl leading-none tracking-tight text-foreground sm:text-[38px]"
           aria-label="Trackdub home"
         >
-          <img src={trackdubIcon} alt="" className="h-9 w-9 object-contain sm:h-12 sm:w-12" />
+          <img
+            src={trackdubIcon}
+            alt=""
+            aria-hidden="true"
+            className="h-9 w-auto shrink-0 -translate-y-px sm:h-11"
+          />
           <span>
             Trackdub<span className="text-accent">.</span>
           </span>
@@ -4041,7 +4046,12 @@ function Colophon() {
               className="flex items-center gap-3 font-serif text-3xl leading-none text-foreground"
               aria-label="Trackdub home"
             >
-              <img src={trackdubIcon} alt="" className="h-10 w-10 object-contain" />
+                <img
+                  src={trackdubIcon}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-9 w-auto shrink-0 -translate-y-px"
+                />
               <span>
                 Trackdub<span className="text-accent">.</span>
               </span>
