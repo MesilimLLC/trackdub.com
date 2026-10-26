@@ -1009,7 +1009,7 @@ function Masthead() {
             src={trackdubIcon}
             alt=""
             aria-hidden="true"
-            className="h-9 w-auto shrink-0 -translate-y-px sm:h-11"
+            className="h-[0.79em] w-auto shrink-0 -translate-y-[0.03em]"
           />
           <span>
             Trackdub<span className="text-accent">.</span>
@@ -4050,7 +4050,7 @@ function Colophon() {
                   src={trackdubIcon}
                   alt=""
                   aria-hidden="true"
-                  className="h-9 w-auto shrink-0 -translate-y-px"
+                  className="h-[0.79em] w-auto shrink-0 -translate-y-[0.03em]"
                 />
               <span>
                 Trackdub<span className="text-accent">.</span>
