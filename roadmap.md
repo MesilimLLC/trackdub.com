@@ -1,8 +1,8 @@
 # Load speed and reliability
 
-- [ ] Reduce unnecessary work during initial page loading.
-- [ ] Strengthen loading recovery without blocking readable page content.
-- [ ] Verify normal loading, delayed scripts, retry, and page interactions.
+- [x] Reduce unnecessary work during initial page loading.
+- [x] Strengthen loading recovery without blocking readable page content.
+- [x] Verify normal loading, delayed scripts, retry, and page interactions.
 
 ## Reliability monitoring
 
