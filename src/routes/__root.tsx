@@ -166,22 +166,93 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+const bootSplashCss = `
+#td-boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#faf6ef;color:#231c15;font-family:"IBM Plex Sans",system-ui,sans-serif;transition:opacity .35s ease}
+#td-boot.td-boot-done{opacity:0;pointer-events:none}
+#td-boot img{width:44px;height:auto;display:block}
+#td-boot .td-word{font-family:"Instrument Serif",Georgia,serif;font-size:34px;line-height:1;letter-spacing:-0.01em}
+#td-boot .td-word em{font-style:normal;color:#b3641f}
+#td-boot .td-status{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a7c6c}
+#td-boot .td-bar{width:180px;height:2px;background:#e6dccb;overflow:hidden;border-radius:1px}
+#td-boot .td-bar i{display:block;height:100%;width:40%;background:#b3641f;animation:td-boot-slide 1.1s ease-in-out infinite}
+@keyframes td-boot-slide{0%{transform:translateX(-100%)}100%{transform:translateX(450%)}}
+#td-boot .td-retry{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;max-width:320px}
+#td-boot.td-boot-slow .td-bar,#td-boot.td-boot-slow .td-status-loading{display:none}
+#td-boot.td-boot-slow .td-retry{display:flex}
+#td-boot .td-retry p{margin:0;font-size:14px;line-height:1.5;color:#5c5142}
+#td-boot .td-retry button{font:inherit;font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:10px 22px;background:#7a2e12;color:#faf6ef;border:0;border-radius:2px;cursor:pointer}
+#td-boot .td-retry button:hover{background:#8f3a1a}
+@media (prefers-reduced-motion:reduce){#td-boot .td-bar i{animation:none;width:100%}}
+`;
+
+const bootWatchdogScript = `
+window.__tdBootTimer=setTimeout(function(){
+  var el=document.getElementById('td-boot');
+  if(el&&!window.__tdBooted){el.classList.add('td-boot-slow');}
+},12000);
+document.addEventListener('click',function(e){
+  var t=e.target;
+  if(t&&t.id==='td-boot-reload'){window.location.reload();}
+});
+`;
+
+function BootSplash() {
+  return (
+    <div id="td-boot" role="status" aria-label="Trackdub is loading">
+      <img src="/favicon.png" alt="" width={44} height={44} />
+      <div className="td-word">
+        Trackdub<em>.</em>
+      </div>
+      <div className="td-bar" aria-hidden="true">
+        <i />
+      </div>
+      <div className="td-status td-status-loading">Loading the workstation</div>
+      <div className="td-retry">
+        <p>
+          This is taking longer than usual. The site may be restarting — try reloading, and it
+          should be ready in a moment.
+        </p>
+        <button id="td-boot-reload" type="button">
+          Reload page
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <style dangerouslySetInnerHTML={{ __html: bootSplashCss }} />
       </head>
       <body>
+        <BootSplash />
         {children}
+        <script dangerouslySetInnerHTML={{ __html: bootWatchdogScript }} />
         <Scripts />
       </body>
     </html>
   );
 }
 
+function dismissBootSplash() {
+  (window as unknown as { __tdBooted?: boolean }).__tdBooted = true;
+  const w = window as unknown as { __tdBootTimer?: number };
+  if (w.__tdBootTimer) clearTimeout(w.__tdBootTimer);
+  const el = document.getElementById("td-boot");
+  if (!el) return;
+  el.classList.add("td-boot-done");
+  window.setTimeout(() => el.remove(), 400);
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    dismissBootSplash();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
