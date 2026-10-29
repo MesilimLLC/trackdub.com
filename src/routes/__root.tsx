@@ -171,8 +171,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 const bootSplashCss = `
-#td-boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#faf6ef;color:#231c15;font-family:"IBM Plex Sans",system-ui,sans-serif;transition:opacity .35s ease}
-#td-boot.td-boot-done{opacity:0;pointer-events:none}
+#td-boot{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#faf6ef;color:#231c15;font-family:"IBM Plex Sans",system-ui,sans-serif;visibility:hidden;animation:td-boot-show 0s .8s forwards}
+@keyframes td-boot-show{to{visibility:visible}}
+#td-boot.td-boot-slow{visibility:visible;animation:none}
+#td-boot.td-boot-done{display:none;animation:none}
 #td-boot img{width:44px;height:auto;display:block}
 #td-boot .td-word{font-family:"Instrument Serif",Georgia,serif;font-size:34px;line-height:1;letter-spacing:-0.01em}
 #td-boot .td-word em{font-style:normal;color:#b3641f}
@@ -225,6 +227,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: bootWatchdogScript }} />
         <HeadContent />
         <style dangerouslySetInnerHTML={{ __html: bootSplashCss }} />
+        <noscript><style>{"#td-boot{display:none!important}"}</style></noscript>
       </head>
       <body>
         <BootSplash />
@@ -243,7 +246,6 @@ function dismissBootSplash() {
   const el = document.getElementById("td-boot");
   if (!el) return;
   el.classList.add("td-boot-done");
-  window.setTimeout(() => el.remove(), 400);
 }
 
 function RootComponent() {

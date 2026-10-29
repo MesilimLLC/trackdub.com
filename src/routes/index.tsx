@@ -102,6 +102,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/" }],
     scripts: [
@@ -661,7 +662,7 @@ function SectionRail() {
     const ro = new ResizeObserver(() => scheduleRailFrameRef.current());
     ro.observe(list);
     return () => ro.disconnect();
-  }, [active, visible]);
+  }, []);
 
   const handleRailPointerDown = (e: PointerEvent) => {
     if (e.button !== 0 && e.pointerType === "mouse") return;
@@ -1839,10 +1840,11 @@ function ProductPlate() {
           <div>
             <figure className="overflow-hidden border border-border">
               <img
-                src="/screenshots/app-shell-early-build.png"
+                src="/screenshots/app-shell-early-build.webp"
                 alt="Trackdub desktop dubbing workstation with pipeline controls, video preview, translated segments, and per-line playback controls"
                 className="w-full"
                 loading="lazy"
+                decoding="async"
                 width={1920}
                 height={1050}
               />
@@ -3840,14 +3842,34 @@ function WaitlistForm() {
         },
       });
     };
-    if (window.turnstile) {
-      tryRender();
-    } else {
+    const load = () => {
+      if (cancelled) return;
+      if (window.turnstile) { tryRender(); return; }
       window.__onTurnstileLoad__ = tryRender;
-    }
+      if (document.getElementById("td-turnstile-script")) return;
+      const script = document.createElement("script");
+      script.id = "td-turnstile-script";
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__onTurnstileLoad__&render=explicit";
+      script.async = true;
+      script.onerror = () => {
+        script.remove();
+        if (!cancelled) setVerificationState("error");
+      };
+      document.head.appendChild(script);
+    };
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        load();
+        observer.disconnect();
+      }
+    }, { rootMargin: "600px" });
+    const container = widgetContainerRef.current;
+    if (container) observer.observe(container);
     return () => {
       cancelled = true;
+      observer.disconnect();
       if (widgetIdRef.current) window.turnstile?.remove(widgetIdRef.current);
+      widgetIdRef.current = null;
       delete window.__onTurnstileLoad__;
     };
   }, []);
@@ -3856,6 +3878,7 @@ function WaitlistForm() {
     setTurnstileToken(null);
     setVerificationState("required");
     window.turnstile?.reset(widgetIdRef.current ?? undefined);
+    if (!window.turnstile) window.location.reload();
   }
 
   async function onSubmit(e: FormEvent) {
@@ -3925,11 +3948,6 @@ function WaitlistForm() {
 
   return (
     <>
-      <script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__onTurnstileLoad__&render=explicit"
-        async
-        defer
-      />
       <form
         onSubmit={onSubmit}
         className="mx-auto mt-12 flex w-full max-w-md flex-col items-center gap-3"

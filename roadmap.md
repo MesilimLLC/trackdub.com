@@ -1,4 +1,10 @@
-# Reliability monitoring
+# Load speed and reliability
+
+- [x] Reduce unnecessary work during initial page loading.
+- [x] Strengthen loading recovery without blocking readable page content.
+- [x] Verify normal loading, delayed scripts, retry, and page interactions.
+
+## Reliability monitoring
 
 - [x] Add private event storage and daily aggregates.
 - [x] Instrument boot failures, retry activation/clicks, and recovery with bounded delivery.
