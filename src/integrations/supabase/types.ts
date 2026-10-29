@@ -32,9 +32,46 @@ export type Database = {
         }
         Relationships: []
       }
+      website_reliability_events: {
+        Row: {
+          elapsed_ms: number
+          event_type: string
+          failure_kind: string
+          id: string
+          page: string
+          received_at: string
+        }
+        Insert: {
+          elapsed_ms: number
+          event_type: string
+          failure_kind?: string
+          id: string
+          page: string
+          received_at?: string
+        }
+        Update: {
+          elapsed_ms?: number
+          event_type?: string
+          failure_kind?: string
+          id?: string
+          page?: string
+          received_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      website_reliability_daily: {
+        Row: {
+          average_elapsed_ms: number | null
+          day: string | null
+          event_type: string | null
+          events: number | null
+          failure_kind: string | null
+          page: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
