@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { WebMcpProvider } from "@/components/webmcp-provider";
+import { bootMonitoringScript, markBootReady, recordPageBoundaryFailure } from "@/lib/boot-monitoring";
 
 function NotFoundComponent() {
   return (
@@ -42,6 +43,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    recordPageBoundaryFailure();
+    // Reveal the existing error screen rather than leaving the splash over it.
+    dismissBootSplash();
   }, [error]);
 
   return (
@@ -185,16 +189,10 @@ const bootSplashCss = `
 @media (prefers-reduced-motion:reduce){#td-boot .td-bar i{animation:none;width:100%}}
 `;
 
-const bootWatchdogScript = `
-window.__tdBootTimer=setTimeout(function(){
-  var el=document.getElementById('td-boot');
-  if(el&&!window.__tdBooted){el.classList.add('td-boot-slow');}
-},12000);
-document.addEventListener('click',function(e){
-  var t=e.target;
-  if(t&&t.id==='td-boot-reload'){window.location.reload();}
-});
-`;
+const bootWatchdogScript = bootMonitoringScript(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+);
 
 function BootSplash() {
   return (
@@ -224,13 +222,13 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: bootWatchdogScript }} />
         <HeadContent />
         <style dangerouslySetInnerHTML={{ __html: bootSplashCss }} />
       </head>
       <body>
         <BootSplash />
         {children}
-        <script dangerouslySetInnerHTML={{ __html: bootWatchdogScript }} />
         <Scripts />
       </body>
     </html>
@@ -238,6 +236,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function dismissBootSplash() {
+  markBootReady();
   (window as unknown as { __tdBooted?: boolean }).__tdBooted = true;
   const w = window as unknown as { __tdBootTimer?: number };
   if (w.__tdBootTimer) clearTimeout(w.__tdBootTimer);
