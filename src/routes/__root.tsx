@@ -237,8 +237,22 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function dismissBootSplash() {
+  (window as unknown as { __tdBooted?: boolean }).__tdBooted = true;
+  const w = window as unknown as { __tdBootTimer?: number };
+  if (w.__tdBootTimer) clearTimeout(w.__tdBootTimer);
+  const el = document.getElementById("td-boot");
+  if (!el) return;
+  el.classList.add("td-boot-done");
+  window.setTimeout(() => el.remove(), 400);
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    dismissBootSplash();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
