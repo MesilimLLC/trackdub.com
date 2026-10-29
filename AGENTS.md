@@ -22,3 +22,8 @@ TanStack Start / Vite / Bun / Cloudflare. Local: `bun install`, then `bun run de
 - Install with Bun (lockfile is `bun.lock`), not npm.
 - Secrets often needed for full local/cloud runs: `WEB_BOT_AUTH_PRIVATE_JWK` (`.dev.vars`), plus `TURNSTILE_SECRET`, `SITE_KEY`, `RESEND_API_KEY` (`.env`). Put these in Cursor Secrets for cloud agents; do not commit values.
 - Deploy path: `bun run deploy` (build + wrangler). Prefer verifying with `bun run build` in agents unless deploy is explicitly requested.
+
+## Website reliability
+
+- Keep boot monitoring as an inline, dependency-free head script with bounded offline delivery directly to an insert-only Cloud table; it must run when the application bundle fails, collect no visitor identifiers or free-text errors, and never block rendering.
+- Reliability event rows and daily aggregates have no public read policy; review trends through the project's Backend, not a public dashboard.

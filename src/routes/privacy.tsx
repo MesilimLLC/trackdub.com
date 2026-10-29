@@ -170,7 +170,7 @@ function Header() {
           certification of any kind.
         </p>
         <div className="mt-10 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-          Last updated · 2026-07-23
+          Last updated · 2026-10-29
         </div>
       </Container>
     </section>
@@ -354,7 +354,7 @@ function Details() {
   const items: [string, React.ReactNode][] = [
     [
       "Cookies and analytics on this website",
-      "The trackdub.com marketing site does not set advertising cookies. If we add basic, privacy-respecting analytics later, we will list the provider here and describe what it collects.",
+      "The trackdub.com marketing site does not set advertising cookies. We use Lovable Cloud to record website loading failures, slow-load retry screens, retry clicks, and recovery after a loading problem. Each record contains only an event type, a broad page category, elapsed loading time, a failure category, a server timestamp, and a random event ID for duplicate prevention. We do not include visitor identifiers, IP addresses, browser details, full URLs, search parameters, error messages, or your media. A small delivery queue in your browser stores at most 12 events for up to seven days if the connection fails, then tries again when the site opens or connectivity returns. Website reliability monitoring is separate from the desktop app’s opt-in telemetry.",
     ],
     [
       "Children",
