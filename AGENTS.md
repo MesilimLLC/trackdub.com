@@ -27,3 +27,5 @@ TanStack Start / Vite / Bun / Cloudflare. Local: `bun install`, then `bun run de
 
 - Keep boot monitoring as an inline, dependency-free head script with bounded offline delivery directly to an insert-only Cloud table; it must run when the application bundle fails, collect no visitor identifiers or free-text errors, and never block rendering.
 - Reliability event rows and daily aggregates have no public read policy; review trends through the project's Backend, not a public dashboard.
+- Keep server-rendered content readable without JavaScript, delay the splash on fast loads, and load waitlist verification near its viewport; optional work must not block the first screen.
+- Serve the desktop screenshot as lossless WebP with lazy loading and fixed dimensions; preserve inspectable UI detail while reducing transfer size.

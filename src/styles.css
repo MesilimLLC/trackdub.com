@@ -378,6 +378,15 @@
   transform: translate3d(0, 0, 0);
 }
 
+/* Server-rendered content remains readable if application scripts never arrive. */
+html:not(.td-reveals-enabled) .reveal,
+html:not(.td-reveals-enabled) .reveal-child,
+html:not(.td-reveals-enabled) [data-reveal-child] {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
 /* stagger children within a revealed container */
 @utility reveal-child {
   opacity: 0;

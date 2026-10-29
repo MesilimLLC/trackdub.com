@@ -49,15 +49,16 @@ export function bootMonitoringScript(url: string | undefined, key: string | unde
     if(recovered) window.__tdRecordReliability('load_recovered');
     flush();
   };
-  window.__tdBootTimer=setTimeout(function(){
+  function showRetry(){
     var el=document.getElementById('td-boot');
     if(el&&!window.__tdBooted){el.classList.add('td-boot-slow');window.__tdRecordReliability('retry_shown');}
-  },12000);
+  }
+  window.__tdBootTimer=setTimeout(showRetry,12000);
   window.addEventListener('error',function(e){
     if(window.__tdBooted) return;
     var t=e.target;
-    if(t&&t.tagName==='SCRIPT') window.__tdRecordReliability('load_failure','script');
-    else if(t&&t.tagName==='LINK'&&t.rel==='stylesheet') window.__tdRecordReliability('load_failure','stylesheet');
+    if(t&&t.tagName==='SCRIPT'){window.__tdRecordReliability('load_failure','script');showRetry();}
+    else if(t&&t.tagName==='LINK'&&t.rel==='stylesheet'){window.__tdRecordReliability('load_failure','stylesheet');showRetry();}
     else if(t===window) window.__tdRecordReliability('load_failure','runtime');
   },true);
   window.addEventListener('unhandledrejection',function(){

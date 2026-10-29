@@ -26,15 +26,14 @@ export function useReveal() {
       return () => window.removeEventListener("hashchange", revealHashTarget);
     }
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
-    // Pre-index staggered children so their CSS delays are ready before reveal.
-    els.forEach((root) => {
+    const prepare = (root: HTMLElement) => {
       const kids = root.querySelectorAll<HTMLElement>("[data-reveal-child]");
       kids.forEach((k, i) => {
         if (!k.style.getPropertyValue("--reveal-i")) {
           k.style.setProperty("--reveal-i", String(i));
         }
       });
-    });
+    };
     const io = new IntersectionObserver(
       (entries) => {
         // Cascade when several sections cross the threshold in one batch
@@ -49,6 +48,7 @@ export function useReveal() {
             return 0;
           });
         incoming.forEach((el, idx) => {
+          prepare(el);
           const delay = incoming.length > 1 ? Math.min(idx * 90, 240) : 0;
           el.style.setProperty("--reveal-delay", `${delay}ms`);
           // next frame so the delay is committed before the class change animates
@@ -58,9 +58,11 @@ export function useReveal() {
       },
       { rootMargin: "0px 0px -12% 0px", threshold: [0, 0.08] },
     );
+    document.documentElement.classList.add("td-reveals-enabled");
     els.filter((el) => !el.classList.contains("revealed")).forEach((el) => io.observe(el));
     return () => {
       io.disconnect();
+      document.documentElement.classList.remove("td-reveals-enabled");
       window.removeEventListener("hashchange", revealHashTarget);
     };
   }, []);
