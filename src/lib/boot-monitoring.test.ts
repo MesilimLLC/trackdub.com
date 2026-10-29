@@ -46,9 +46,25 @@ test("script failure and recovery are recorded without exception text", async ()
   h.listeners.error?.({ target: { tagName: "SCRIPT" }, message: "secret" });
   h.window.__tdBootReady();
   await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(h.calls.map(x => [x.event_type, x.failure_kind]), [["load_failure", "script"], ["load_recovered", "none"]]);
+  assert.deepEqual(h.calls.map(x => [x.event_type, x.failure_kind]), [["load_failure", "script"], ["retry_shown", "none"], ["load_recovered", "none"]]);
   h.listeners.error?.({ target: { tagName: "SCRIPT" } });
-  assert.equal(h.calls.length, 2);
+  assert.equal(h.calls.length, 3);
+});
+
+test("stylesheet failure offers recovery immediately instead of waiting for timeout", async () => {
+  const h = harness();
+  h.listeners.error?.({ target: { tagName: "LINK", rel: "stylesheet" } });
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(h.calls.map(x => [x.event_type, x.failure_kind]), [["load_failure", "stylesheet"], ["retry_shown", "none"]]);
+});
+
+test("retry activation followed by a click and recovery preserves all event categories", async () => {
+  const h = harness();
+  h.timers[0]?.fn();
+  h.window.__tdRecordReliability("retry_clicked");
+  h.window.__tdBootReady();
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.deepEqual(h.calls.map(x => x.event_type), ["retry_shown", "retry_clicked", "load_recovered"]);
 });
 
 test("normal loading sends no events", () => {
