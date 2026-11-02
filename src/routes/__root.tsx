@@ -8,13 +8,18 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
+import { GTProvider, getLocale, getTranslationsSnapshot } from "gt-tanstack-start";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { WebMcpProvider } from "@/components/webmcp-provider";
-import { bootMonitoringScript, markBootReady, recordPageBoundaryFailure } from "@/lib/boot-monitoring";
+import {
+  bootMonitoringScript,
+  markBootReady,
+  recordPageBoundaryFailure,
+} from "@/lib/boot-monitoring";
 
 function NotFoundComponent() {
   return (
@@ -80,6 +85,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async () => {
+    const locale = getLocale();
+    return {
+      locale,
+      translations: await getTranslationsSnapshot(locale),
+    };
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -221,17 +233,23 @@ function BootSplash() {
 }
 
 function RootShell({ children }: { children: ReactNode }) {
+  const { locale, translations } = Route.useLoaderData();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootWatchdogScript }} />
         <HeadContent />
         <style dangerouslySetInnerHTML={{ __html: bootSplashCss }} />
-        <noscript><style>{"#td-boot{display:none!important}"}</style></noscript>
+        <noscript>
+          <style>{"#td-boot{display:none!important}"}</style>
+        </noscript>
       </head>
       <body>
-        <BootSplash />
-        {children}
+        <GTProvider locale={locale} translations={translations}>
+          <BootSplash />
+          {children}
+        </GTProvider>
         <Scripts />
       </body>
     </html>

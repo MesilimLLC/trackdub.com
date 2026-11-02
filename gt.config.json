@@ -1,0 +1,25 @@
+{
+  "defaultLocale": "en-US",
+  "locales": [
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "he",
+    "hi",
+    "it",
+    "ja",
+    "ko",
+    "nl",
+    "pt-BR",
+    "ru",
+    "sv",
+    "tr",
+    "zh-Hans"
+  ],
+  "files": {
+    "gt": {
+      "output": "src/_gt/[locale].json"
+    }
+  }
+}
