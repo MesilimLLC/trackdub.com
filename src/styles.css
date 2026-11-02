@@ -1193,3 +1193,15 @@ html.reduce-motion .playhead-wrap {
   animation: none !important;
   display: none;
 }
+
+/* Only dimensioned visuals skip offscreen paint/layout. Chapter roots stay
+   fully measured, keeping the navigation rail and hash anchors exact. */
+.deferred-visual {
+  content-visibility: auto;
+}
+.screenshot-frame {
+  aspect-ratio: 1920 / 1050;
+}
+.deferred-demo-space {
+  min-height: 875px;
+}

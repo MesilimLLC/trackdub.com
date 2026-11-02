@@ -29,3 +29,5 @@ TanStack Start / Vite / Bun / Cloudflare. Local: `bun install`, then `bun run de
 - Reliability event rows and daily aggregates have no public read policy; review trends through the project's Backend, not a public dashboard.
 - Keep server-rendered content readable without JavaScript, delay the splash on fast loads, and load waitlist verification near its viewport; optional work must not block the first screen.
 - Serve the desktop screenshot as lossless WebP with lazy loading and fixed dimensions; preserve inspectable UI detail while reducing transfer size.
+- Keep homepage demos in independent lazy chunks with complete SSR HTML; defer browser hydration until near the viewport or explicit interaction so optional simulations do not block initial loading.
+- Apply offscreen rendering containment only to dimensioned visuals, not chapter roots, so the scroll rail retains accurate geometry.

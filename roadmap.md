@@ -1,13 +1,7 @@
-# Load speed and reliability
+# Page-speed improvements
 
-- [x] Reduce unnecessary work during initial page loading.
-- [x] Strengthen loading recovery without blocking readable page content.
-- [x] Verify normal loading, delayed scripts, retry, and page interactions.
-
-## Reliability monitoring
-
-- [x] Add private event storage and daily aggregates.
-- [x] Instrument boot failures, retry activation/clicks, and recovery with bounded delivery.
-- [x] Document website-only collection in the privacy policy.
-- [x] Verify tests and real browser delivery, including offline recovery.
+- [x] Split the pipeline walkthrough and resumable-job simulator into deferred chunks while preserving readable server-rendered content and chapter anchors.
+- [x] Reduce offscreen visual rendering work without changing rail geometry.
+- [x] Add lossless responsive screenshot sizes while preserving the full-resolution original.
+- [x] Verify normal loading, demo edits/recovery, chapter links, and mobile layout.
 - [ ] Track work in Linear — no Linear connection is available in this workspace.
