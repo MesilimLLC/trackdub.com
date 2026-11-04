@@ -32,7 +32,8 @@ function api(path, { method = "GET", body } = {}) {
     const data = await res.json();
     if (!data.success) {
       const msg = (data.errors || []).map((e) => e.message).join("; ") || res.statusText;
-      throw new Error(`${method} ${path}: ${msg}`);
+      const endpoint = path.split("?")[0];
+      throw new Error(`${method} ${endpoint}: ${msg}`);
     }
     return data;
   });
@@ -41,7 +42,7 @@ function api(path, { method = "GET", body } = {}) {
 async function getZoneId() {
   const data = await api(`/zones?name=${ZONE_NAME}&account.id=${ACCOUNT_ID}`);
   const zone = data.result?.[0];
-  if (!zone) throw new Error(`Zone ${ZONE_NAME} not found for account ${ACCOUNT_ID}`);
+  if (!zone) throw new Error(`Zone ${ZONE_NAME} not found for account`);
   return zone.id;
 }
 
@@ -117,6 +118,9 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : error);
+  console.error(
+    "apply-agent-dns failed:",
+    error instanceof Error ? error.message : "Unexpected error",
+  );
   process.exitCode = 1;
 });

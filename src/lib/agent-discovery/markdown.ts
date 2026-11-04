@@ -167,24 +167,48 @@ export function htmlToRoughMarkdown(html: string, url: URL): string {
     html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["'][^>]*>/i) ||
     html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["'][^>]*>/i);
 
-  let body = html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<nav[\s\S]*?<\/nav>/gi, "")
-    .replace(/<footer[\s\S]*?<\/footer>/gi, "")
+  let body = html;
+  let previous = "";
+
+  do {
+    previous = body;
+    body = body.replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, "");
+  } while (body !== previous);
+
+  do {
+    previous = body;
+    body = body.replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, "");
+  } while (body !== previous);
+
+  do {
+    previous = body;
+    body = body.replace(/<(?:nav|footer)\b[^>]*>[\s\S]*?<\/(?:nav|footer)[^>]*>/gi, "");
+  } while (body !== previous);
+
+  body = body
     .replace(/<\/(p|div|section|article|li|h[1-6]|tr)>/gi, "\n")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<h1[^>]*>/gi, "\n# ")
     .replace(/<h2[^>]*>/gi, "\n## ")
     .replace(/<h3[^>]*>/gi, "\n### ")
-    .replace(/<li[^>]*>/gi, "\n- ")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&#x27;/g, "'")
-    .replace(/&quot;/g, '"')
+    .replace(/<li[^>]*>/gi, "\n- ");
+
+  do {
+    previous = body;
+    body = body.replace(/<[^>]+>/g, "");
+  } while (body !== previous);
+
+  const HTML_ENTITIES: Record<string, string> = {
+    "&nbsp;": " ",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&#x27;": "'",
+    "&quot;": '"',
+    "&amp;": "&",
+  };
+
+  body = body
+    .replace(/&(?:nbsp|lt|gt|#x27|quot|amp);/g, (match) => HTML_ENTITIES[match] ?? match)
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 

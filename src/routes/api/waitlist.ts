@@ -57,15 +57,15 @@ async function sendWaitlistConfirmation(
   to: string,
   interest: "personal" | "pro" | "studio" | null,
 ) {
-  const planLine = interest
-    ? `We'll reach out when the <strong>${INTEREST_LABEL[interest]}</strong> track opens up.`
+  const interestLabel = interest ? INTEREST_LABEL[interest] : null;
+  const planLineText = interestLabel
+    ? `We'll reach out when the ${interestLabel} track opens up.`
+    : "We'll reach out when Pro is ready.";
+  const planLineHtml = interestLabel
+    ? `We'll reach out when the <strong>${interestLabel}</strong> track opens up.`
     : "We'll reach out when Pro is ready.";
   const subject = "You're on the Trackdub waitlist";
-  const text = [
-    "Thanks for joining the Trackdub waitlist.",
-    planLine.replace(/<[^>]+>/g, ""),
-    "— Trackdub",
-  ].join(" ");
+  const text = ["Thanks for joining the Trackdub waitlist.", planLineText, "— Trackdub"].join(" ");
   const html = `<!doctype html>
 <html lang="en">
   <body style="margin:0;padding:0;background:#f5ede0;color:#23170f;font-family:-apple-system,BlinkMacSystemFont,'IBM Plex Sans',Helvetica,Arial,sans-serif;">
@@ -74,7 +74,7 @@ async function sendWaitlistConfirmation(
         You're on the list.
       </h1>
       <p style="font-size:16px;line-height:1.6;margin:0 0 12px;color:#3b2a1c;">
-        Thanks for joining the Trackdub waitlist. ${planLine}
+        Thanks for joining the Trackdub waitlist. ${planLineHtml}
       </p>
       <p style="font-size:14px;line-height:1.6;margin:24px 0 0;color:#6b5847;">
         — Trackdub
