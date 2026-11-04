@@ -146,8 +146,12 @@ function Index() {
         <PipelineFeature />
         <ProductPlate />
         <TrustStrip />
-        <DeferredDemo id="walkthrough"><Walkthrough /></DeferredDemo>
-        <DeferredDemo id="resume"><ResumableJob /></DeferredDemo>
+        <DeferredDemo id="walkthrough">
+          <Walkthrough />
+        </DeferredDemo>
+        <DeferredDemo id="resume">
+          <ResumableJob />
+        </DeferredDemo>
         <StageChapters />
         <Control />
         <Performance />
@@ -1217,7 +1221,11 @@ function HeroPulseRail() {
         00:00:14:12
       </span>
       <div className="relative min-w-0 flex-1 basis-0 overflow-hidden">
-        <svg viewBox="0 0 1000 20" className="deferred-visual h-5 w-full" preserveAspectRatio="none">
+        <svg
+          viewBox="0 0 1000 20"
+          className="deferred-visual h-5 w-full"
+          preserveAspectRatio="none"
+        >
           {Array.from({ length: 160 }).map((_, i) => {
             const energy = round3(
               Math.max(1, Math.abs(Math.sin(i * 0.73) * Math.cos(i * 0.19)) * 15),
@@ -1460,7 +1468,11 @@ function WorkstationMock() {
               <span>Waveform</span>
               <span>−14.1 LUFS</span>
             </div>
-            <svg viewBox="0 0 600 60" className="deferred-visual h-14 w-full" preserveAspectRatio="none">
+            <svg
+              viewBox="0 0 600 60"
+              className="deferred-visual h-14 w-full"
+              preserveAspectRatio="none"
+            >
               {Array.from({ length: 120 }).map((_, i) => {
                 const seed = Math.sin(i * 1.37) * Math.cos(i * 0.51);
                 const h = round3(8 + Math.abs(seed) * 42);
@@ -2665,12 +2677,16 @@ function WaitlistForm() {
     };
     const load = () => {
       if (cancelled) return;
-      if (window.turnstile) { tryRender(); return; }
+      if (window.turnstile) {
+        tryRender();
+        return;
+      }
       window.__onTurnstileLoad__ = tryRender;
       if (document.getElementById("td-turnstile-script")) return;
       const script = document.createElement("script");
       script.id = "td-turnstile-script";
-      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__onTurnstileLoad__&render=explicit";
+      script.src =
+        "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__onTurnstileLoad__&render=explicit";
       script.async = true;
       script.onerror = () => {
         script.remove();
@@ -2678,12 +2694,15 @@ function WaitlistForm() {
       };
       document.head.appendChild(script);
     };
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        load();
-        observer.disconnect();
-      }
-    }, { rootMargin: "600px" });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          load();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "600px" },
+    );
     const container = widgetContainerRef.current;
     if (container) observer.observe(container);
     return () => {
@@ -2886,12 +2905,12 @@ function Colophon() {
               className="flex items-center gap-3 font-serif text-3xl leading-none text-foreground"
               aria-label="Trackdub home"
             >
-                <img
-                  src={trackdubIcon}
-                  alt=""
-                  aria-hidden="true"
-                  className="h-[1.1em] w-auto shrink-0 -translate-y-[0.03em]"
-                />
+              <img
+                src={trackdubIcon}
+                alt=""
+                aria-hidden="true"
+                className="h-[1.1em] w-auto shrink-0 -translate-y-[0.03em]"
+              />
               <span>
                 Trackdub<span className="text-accent">.</span>
               </span>
@@ -2955,8 +2974,8 @@ function Colophon() {
             />
           </a>
           <p className="mt-3 max-w-2xl text-[12px] leading-relaxed text-muted-foreground">
-            © 2025 NVIDIA, the NVIDIA logo, CUDA, RTX, and TensorRT are trademarks and/or
-            registered trademarks of NVIDIA Corporation in the U.S. and other countries.
+            © 2025 NVIDIA, the NVIDIA logo, CUDA, RTX, and TensorRT are trademarks and/or registered
+            trademarks of NVIDIA Corporation in the U.S. and other countries.
           </p>
         </div>
       </Container>
