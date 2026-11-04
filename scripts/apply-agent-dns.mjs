@@ -117,10 +117,9 @@ async function main() {
   console.log('  curl -sI -H "Accept: text/markdown" https://trackdub.com/');
 }
 
-main().catch((error) => {
+main().catch(() => {
   console.error(
-    "apply-agent-dns failed:",
-    error instanceof Error ? error.message : "Unexpected error",
+    "apply-agent-dns failed. Check CLOUDFLARE_API_TOKEN permissions and zone configuration.",
   );
   process.exitCode = 1;
 });
