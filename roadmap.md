@@ -1,5 +1,6 @@
 # Page-speed improvements
 
+- [x] Verify and fix invisible deferred demos after client-side homepage navigation.
 - [x] Split the pipeline walkthrough and resumable-job simulator into deferred chunks while preserving readable server-rendered content and chapter anchors.
 - [x] Reduce offscreen visual rendering work without changing rail geometry.
 - [x] Add lossless responsive screenshot sizes while preserving the full-resolution original.

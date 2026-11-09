@@ -59,8 +59,24 @@ export function useReveal() {
       { rootMargin: "0px 0px -12% 0px", threshold: [0, 0.08] },
     );
     document.documentElement.classList.add("td-reveals-enabled");
-    els.filter((el) => !el.classList.contains("revealed")).forEach((el) => io.observe(el));
+    const observeReveal = (el: HTMLElement) => {
+      if (!el.classList.contains("revealed")) io.observe(el);
+    };
+    els.forEach(observeReveal);
+    // Lazy demos can mount after the initial scan on client-side navigation.
+    // Observe only added subtrees rather than rescanning the entire page.
+    const addedSections = new MutationObserver((records) => {
+      records.forEach((record) => {
+        record.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          if (node.matches("[data-reveal]")) observeReveal(node);
+          node.querySelectorAll<HTMLElement>("[data-reveal]").forEach(observeReveal);
+        });
+      });
+    });
+    addedSections.observe(document.body, { childList: true, subtree: true });
     return () => {
+      addedSections.disconnect();
       io.disconnect();
       document.documentElement.classList.remove("td-reveals-enabled");
       window.removeEventListener("hashchange", revealHashTarget);
