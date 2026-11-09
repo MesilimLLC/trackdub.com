@@ -1,12 +1,7 @@
 import { appendSignature, component, createSignature } from "http-message-sig";
 import { generateNonce } from "web-bot-auth";
 
-import {
-  DIRECTORY_MEDIA_TYPE,
-  type WebBotAuthEnv,
-  directoryJwks,
-  loadSigner,
-} from "./keys";
+import { DIRECTORY_MEDIA_TYPE, type WebBotAuthEnv, directoryJwks, loadSigner } from "./keys";
 
 const DIRECTORY_TAG = "http-message-signatures-directory";
 const DIRECTORY_TTL_MS = 300_000;

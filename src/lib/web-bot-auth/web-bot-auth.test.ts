@@ -19,12 +19,17 @@ test("directory publishes a signed Ed25519 JWKS", async () => {
   });
 
   assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /http-message-signatures-directory\+json/);
+  assert.match(
+    response.headers.get("content-type") ?? "",
+    /http-message-signatures-directory\+json/,
+  );
   assert.ok(response.headers.get("signature"));
   assert.match(response.headers.get("signature-input") ?? "", /http-message-signatures-directory/);
   assert.match(response.headers.get("signature-input") ?? "", /@authority/);
 
-  const body = (await response.json()) as { keys: Array<{ kty?: string; crv?: string; x?: string; d?: string }> };
+  const body = (await response.json()) as {
+    keys: Array<{ kty?: string; crv?: string; x?: string; d?: string }>;
+  };
   assert.equal(body.keys.length, 1);
   assert.deepEqual(body.keys[0], publicJwkFromPrivate(privateJwk));
   assert.equal((body.keys[0] as { d?: string }).d, undefined);
@@ -32,9 +37,13 @@ test("directory publishes a signed Ed25519 JWKS", async () => {
 
 test("outbound bot requests include Signature-Agent and Signature-Input", async () => {
   const privateJwk = await generateEd25519PrivateJwk();
-  const headers = await webBotAuthHeaders("https://example.com/robots.txt", { method: "GET" }, {
-    WEB_BOT_AUTH_PRIVATE_JWK: JSON.stringify(privateJwk),
-  });
+  const headers = await webBotAuthHeaders(
+    "https://example.com/robots.txt",
+    { method: "GET" },
+    {
+      WEB_BOT_AUTH_PRIVATE_JWK: JSON.stringify(privateJwk),
+    },
+  );
 
   assert.equal(headers["Signature-Agent"], SIGNATURE_AGENT_HEADER_VALUE);
   assert.match(headers["Signature-Input"], /web-bot-auth/);

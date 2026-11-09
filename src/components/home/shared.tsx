@@ -31,4 +31,3 @@ export function SectionNumber({ n, label }: { n: string; label: string }) {
     </div>
   );
 }
-

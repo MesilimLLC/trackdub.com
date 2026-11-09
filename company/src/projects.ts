@@ -73,17 +73,20 @@ export const projects = [
       {
         name: "Official registry source",
         href: "https://github.com/numan-cli/numan-registry",
-        detail: "Curated catalog, schema checks, compatibility data, and protected production signing.",
+        detail:
+          "Curated catalog, schema checks, compatibility data, and protected production signing.",
       },
       {
         name: "Plugin build pipeline",
         href: "https://github.com/numan-cli/numan-plugins",
-        detail: "Cross-compiles selected source-only plugins from pinned upstream commits into release artifacts.",
+        detail:
+          "Cross-compiles selected source-only plugins from pinned upstream commits into release artifacts.",
       },
       {
         name: "Live package registry",
         href: "https://numan-cli.github.io/numan-registry/",
-        detail: "Published catalog consumed by Numan clients; the signed JSON index is the machine input.",
+        detail:
+          "Published catalog consumed by Numan clients; the signed JSON index is the machine input.",
       },
     ],
   },
