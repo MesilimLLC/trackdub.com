@@ -1,6 +1,9 @@
 // Kept inline in the document head: works even when the application bundle fails.
 export function bootMonitoringScript(url: string | undefined, key: string | undefined) {
-  const config = JSON.stringify({ url: url ? `${url.replace(/\/+$/, "")}/rest/v1/website_reliability_events` : "", key: key || "" }).replace(/</g, "\\u003c");
+  const config = JSON.stringify({
+    url: url ? `${url.replace(/\/+$/, "")}/rest/v1/website_reliability_events` : "",
+    key: key || "",
+  }).replace(/</g, "\\u003c");
   return `
 (function(){
   var config=${config};

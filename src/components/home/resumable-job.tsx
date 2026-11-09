@@ -549,4 +549,3 @@ function statusLabel(s: JobStageStatus, pct: number): string {
       return "queued";
   }
 }
-

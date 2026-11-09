@@ -576,7 +576,9 @@ function VoicePane({
   );
 }
 
-function round3(n: number) { return Number(n.toFixed(3)); }
+function round3(n: number) {
+  return Number(n.toFixed(3));
+}
 
 function FakeWaveform({ seed, color, busy }: { seed: number; color: string; busy: boolean }) {
   const bars = Array.from({ length: 48 }, (_, i) => {
@@ -602,4 +604,3 @@ function FakeWaveform({ seed, color, busy }: { seed: number; color: string; busy
     </div>
   );
 }
-

@@ -7,19 +7,31 @@ function harness(storage = new Map<string, string>(), fail = false) {
   const calls: Record<string, unknown>[] = [];
   const listeners: Record<string, (event?: unknown) => void> = {};
   const timers: Array<{ fn: () => void; ms: number }> = [];
-  const window: Record<string, any> = { addEventListener: (type: string, fn: () => void) => { listeners[type] = fn; } };
+  const window: Record<string, any> = {
+    addEventListener: (type: string, fn: () => void) => {
+      listeners[type] = fn;
+    },
+  };
   let counter = 0;
   const context = {
     window,
     location: { pathname: "/privacy", search: "?email=private", hash: "#secret" },
     performance: { now: () => 13000 },
     crypto: { randomUUID: () => `test-${++counter}` },
-    localStorage: { getItem: (k: string) => storage.get(k), setItem: (k: string, v: string) => storage.set(k, v) },
-    setTimeout: (fn: () => void, ms: number) => { timers.push({ fn, ms }); return 1; },
+    localStorage: {
+      getItem: (k: string) => storage.get(k),
+      setItem: (k: string, v: string) => storage.set(k, v),
+    },
+    setTimeout: (fn: () => void, ms: number) => {
+      timers.push({ fn, ms });
+      return 1;
+    },
     clearTimeout: () => {},
     document: {
       getElementById: () => ({ classList: { add: () => {} } }),
-      addEventListener: (type: string, fn: () => void) => { listeners[`document:${type}`] = fn; },
+      addEventListener: (type: string, fn: () => void) => {
+        listeners[`document:${type}`] = fn;
+      },
     },
     fetch: async (_url: string, init: { body: string }) => {
       calls.push(JSON.parse(init.body));
@@ -36,17 +48,30 @@ test("retry activates at 12 seconds and emits once without sensitive URL data", 
   assert.equal(h.timers[0]?.ms, 12000);
   h.timers[0]?.fn();
   h.timers[0]?.fn();
-  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(h.calls.length, 1);
-  assert.deepEqual(h.calls[0], { id: "test-1", event_type: "retry_shown", page: "privacy", elapsed_ms: 0, failure_kind: "none" });
+  assert.deepEqual(h.calls[0], {
+    id: "test-1",
+    event_type: "retry_shown",
+    page: "privacy",
+    elapsed_ms: 0,
+    failure_kind: "none",
+  });
 });
 
 test("script failure and recovery are recorded without exception text", async () => {
   const h = harness();
   h.listeners.error?.({ target: { tagName: "SCRIPT" }, message: "secret" });
   h.window.__tdBootReady();
-  await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(h.calls.map(x => [x.event_type, x.failure_kind]), [["load_failure", "script"], ["retry_shown", "none"], ["load_recovered", "none"]]);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(
+    h.calls.map((x) => [x.event_type, x.failure_kind]),
+    [
+      ["load_failure", "script"],
+      ["retry_shown", "none"],
+      ["load_recovered", "none"],
+    ],
+  );
   h.listeners.error?.({ target: { tagName: "SCRIPT" } });
   assert.equal(h.calls.length, 3);
 });
@@ -54,8 +79,14 @@ test("script failure and recovery are recorded without exception text", async ()
 test("stylesheet failure offers recovery immediately instead of waiting for timeout", async () => {
   const h = harness();
   h.listeners.error?.({ target: { tagName: "LINK", rel: "stylesheet" } });
-  await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(h.calls.map(x => [x.event_type, x.failure_kind]), [["load_failure", "stylesheet"], ["retry_shown", "none"]]);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(
+    h.calls.map((x) => [x.event_type, x.failure_kind]),
+    [
+      ["load_failure", "stylesheet"],
+      ["retry_shown", "none"],
+    ],
+  );
 });
 
 test("retry activation followed by a click and recovery preserves all event categories", async () => {
@@ -63,8 +94,11 @@ test("retry activation followed by a click and recovery preserves all event cate
   h.timers[0]?.fn();
   h.window.__tdRecordReliability("retry_clicked");
   h.window.__tdBootReady();
-  await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(h.calls.map(x => x.event_type), ["retry_shown", "retry_clicked", "load_recovered"]);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(
+    h.calls.map((x) => x.event_type),
+    ["retry_shown", "retry_clicked", "load_recovered"],
+  );
 });
 
 test("normal loading sends no events", () => {
@@ -77,9 +111,9 @@ test("normal loading sends no events", () => {
 test("failed delivery persists and is retried once after reopening", async () => {
   const h = harness(new Map(), true);
   h.window.__tdRecordReliability("retry_clicked");
-  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
   const next = harness(h.storage);
-  await new Promise(resolve => setTimeout(resolve, 0));
+  await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(next.calls.length, 1);
   assert.equal(next.calls[0]?.event_type, "retry_clicked");
   assert.deepEqual(JSON.parse(next.storage.get("td-reliability-v1") || "[]"), []);

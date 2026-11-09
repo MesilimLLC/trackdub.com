@@ -4,9 +4,11 @@ import { lazy, Suspense, useEffect, useRef, type ReactNode } from "react";
 // while these Suspense boundaries wait to hydrate until near the viewport.
 function deferredImport<T>(load: () => Promise<T>) {
   let activate: (() => void) | undefined;
-  const ready = new Promise<void>((resolve) => { activate = resolve; });
+  const ready = new Promise<void>((resolve) => {
+    activate = resolve;
+  });
   return {
-    load: () => import.meta.env.SSR ? load() : ready.then(load),
+    load: () => (import.meta.env.SSR ? load() : ready.then(load)),
     activate: () => activate?.(),
   };
 }
@@ -16,7 +18,10 @@ const resumableJob = deferredImport(() => import("./resumable-job"));
 export const Walkthrough = lazy(walkthrough.load);
 export const ResumableJob = lazy(resumableJob.load);
 
-export function DeferredDemo({ id, children }: {
+export function DeferredDemo({
+  id,
+  children,
+}: {
   id: "walkthrough" | "resume";
   children: ReactNode;
 }) {
@@ -29,12 +34,15 @@ export function DeferredDemo({ id, children }: {
       demo.activate();
       return;
     }
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        demo.activate();
-        observer.disconnect();
-      }
-    }, { rootMargin: "800px" });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          demo.activate();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px" },
+    );
     observer.observe(node);
     // Explicit navigation and interaction should never wait for a scroll frame.
     const activateHash = () => {
@@ -54,7 +62,15 @@ export function DeferredDemo({ id, children }: {
   }, [id]);
   return (
     <div ref={ref} data-deferred-demo={id}>
-      <Suspense fallback={<section id={id} className="deferred-demo-space border-b border-border" aria-busy="true" />}>
+      <Suspense
+        fallback={
+          <section
+            id={id}
+            className="deferred-demo-space border-b border-border"
+            aria-busy="true"
+          />
+        }
+      >
         {children}
       </Suspense>
     </div>

@@ -1,10 +1,6 @@
 import { generateNonce, sign } from "web-bot-auth";
 
-import {
-  SIGNATURE_AGENT_HEADER_VALUE,
-  type WebBotAuthEnv,
-  loadSigner,
-} from "./keys";
+import { SIGNATURE_AGENT_HEADER_VALUE, type WebBotAuthEnv, loadSigner } from "./keys";
 
 const REQUEST_TTL_MS = 300_000;
 
